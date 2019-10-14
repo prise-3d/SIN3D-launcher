@@ -27,7 +27,7 @@ def main():
     scenes_name = data['data']
 
     # getting all params
-    parser = argparse.ArgumentParser(description="Compute specific dataset for model using of metric")
+    parser = argparse.ArgumentParser(description="Compute links for scenes of experiment")
 
     parser.add_argument('--host', type=str, help='hostname choosen', default=cfg.default_host)
     parser.add_argument('--experiment', type=str, help="experiment name to use", choices=cfg.experiment_list, required=True)
