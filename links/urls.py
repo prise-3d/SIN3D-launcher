@@ -9,6 +9,7 @@ app_name = 'expe'
 
 urlpatterns = [
     path('', views.list_files, name='list_files'),
+    path('links', views.user_links, name='user_links'),
 ]
 
 if settings.DEBUG is True:

@@ -9,7 +9,8 @@ import requests
 # modules imports
 sys.path.insert(0, '') # trick to enable import of main folder module
 
-import config  as cfg
+# config imports
+import links.config  as cfg
 
 
 def encode_data(data):
@@ -66,8 +67,8 @@ def main():
 
     with open(filename_path, 'w') as f:
 
-        for link in links:
-            f.write(link + '\n')
+        for id, link in enumerate(links):
+            f.write(p_scenes[id] + ';' + p_experiment + ';' + p_experiment_id + ';' + link + '\n')
 
     print("Links are saved into.. %s" % filename_path)
 

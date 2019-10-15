@@ -7,6 +7,9 @@ from django.http import Http404
 
 # main imports
 import os
+import json
+
+from . import config  as cfg
 
 
 def list_files(request):
@@ -14,11 +17,45 @@ def list_files(request):
     # get param 
     # TODO : implement view which list all expe links file
 
-    data = {
+    experiment_path = cfg.expe_data_folder
 
+    files = sorted(os.listdir(experiment_path))
+
+    data = {
+        'folder': files
     }
 
     return render(request, 'links/files.html', data)
+
+
+def user_links(request):
+
+    filename = request.GET.get('filename')
+
+    if filename is None:
+        # send 404 error
+        raise Http404("Page does not exist")
+    
+    filepath = os.path.join(cfg.expe_data_folder, filename)
+
+    if not os.path.exists(filepath):
+        # send 404 error
+        raise Http404("File asked does not exist")
+
+    # read data and send it
+    with open(filepath, 'r') as f:
+        lines = [l.replace('\n', '') for l in f.readlines()]
+
+    links = {}
+    for line in lines:
+        data = line.split(';')
+        links[data[0]] = data[1:]
+            
+    data = {
+        'links': json.dumps(links)
+    }
+    
+    return render(request, 'links/links.html', data)
 
 
 

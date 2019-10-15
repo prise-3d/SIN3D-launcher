@@ -15,12 +15,12 @@ pip install -r requirements.txt
 
 Generate user links (file saved into `data` folder):
 ```sh
-python generate/generate_experiment_link.py --experiment AreSameImagesRandom --experimentId expe1 --scenes Appart1opt02,Bureau1,Cendrier --output expe1.csv
+python links/generate/generate_experiment_link.py --experiment AreSameImagesRandom --experimentId expe1 --scenes Appart1opt02,Bureau1,Cendrier --output expe1.csv
 ```
 
 Generate experiment links for each user (file saved into `expe` folder):
 ```sh
-python generate/generate_experiment.py --data data/expe1.csv --scenes 2 --users 150 --output expe1_user_links.csv
+python links/generate/generate_experiment.py --data data/expe1.csv --scenes 2 --users 150 --userId 1 --output expe1_user_links.csv
 ```
 
 The final file is generated and contains data just as follow:
@@ -32,6 +32,10 @@ link2;link3;...;linkN
 ```
 
 ## Launch WebApp
+
+```
+python manage.py migrate
+```
 
 ```
 python manage.py runserver

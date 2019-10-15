@@ -10,5 +10,5 @@ experiment_list = [
 
 default_host = 'https://diran.univ-littoral.fr'
 
-links_data_folder = 'media/data'
-expe_data_folder  = 'media/expe'
+links_data_folder = 'links/media/data'
+expe_data_folder  = 'links/media/expe'
