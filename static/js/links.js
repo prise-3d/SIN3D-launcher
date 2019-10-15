@@ -1,12 +1,22 @@
 const links_data = JSON.parse(links.replace(/&quot;/g, '"'))
+const links_nb_elem = Object.keys(links_data).length
 
+const alertDiv = document.getElementsByClassName('alert-danger')[0]
 
 function loadDataList(elem, list){
     userId = elem.value
 
     if (userId){
+
+        // check if nomber of links can let access to userId
+        if (userId > (links_nb_elem - 1) || userId < 0){
+            alertDiv.setAttribute('style', 'display:block')
+        }else{
+            alertDiv.setAttribute('style', 'display:none')
+        }
+
         let currentLinks = links_data[userId]
-        
+    
         // remove event listener of each element by default
         if (list.children.length > 0){
             for (var element of list.children){
@@ -85,7 +95,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     loadDataList(inputElement, linksList)
     
-    inputElement.addEventListener('change', event => {
+    inputElement.addEventListener('keyup', event => {
         event.preventDefault()
         currentElem = event.currentTarget
 
