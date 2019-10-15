@@ -4,6 +4,12 @@
 
 Project for generating users links in order to launch SIN3D application quickly during experiment.
 
+## Requirements
+
+```
+pip install -r requirements.txt
+```
+
 ## How to use ?
 
 
@@ -23,6 +29,12 @@ The final file is generated and contains data just as follow:
 link1;link2;...;linkN
 ...
 link2;link3;...;linkN
+```
+
+## Launch WebApp
+
+```
+python manage.py runserver
 ```
 
 ## Licence
