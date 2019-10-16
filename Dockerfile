@@ -19,8 +19,7 @@ RUN python manage.py makemigrations
 RUN python manage.py migrate
 
 # only comment in case it will be necessary
-# RUN echo $WEBEXPE_PREFIX_URL
-# RUN WEBEXPE_PREFIX_URL=$WEBEXPE_PREFIX_URL
-# RUN WEB_API_PREFIX_URL=$WEB_API_PREFIX_URL
+RUN echo $WEB_PREFIX_URL
+RUN WEB_PREFIX_URL=$WEB_PREFIX_URL
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

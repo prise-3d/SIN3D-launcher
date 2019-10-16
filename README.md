@@ -68,6 +68,19 @@ You also have `stop`, `remove`, `clean` commands:
 - `remove`: stop and remove container instance if exists
 - `clean`: remove docker image if exists
 
+### 3. Notes
+
+Configure your own URL prefix using `WEB_PREFIX_URL`:
+
+```
+WEB_PREFIX_URL=experiments python manage.py runserver
+```
+
+or using docker:
+
+```
+WEB_PREFIX_URL=experiments make deploy
+```
 
 ## Licence
 

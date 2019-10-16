@@ -25,7 +25,7 @@ SECRET_KEY = 'a(wm02y7+q^voeqj9i8w&9*ryvtn0gg3bo$-k=()oz!8+5_okg'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -126,3 +126,8 @@ STATICFILES_DIRS = (
 
 MEDIA_ROOT = "media/"
 MEDIA_URL = "media/"
+
+# env variables
+WEB_PREFIX_URL_KEY       = 'WEB_PREFIX_URL'
+WEB_PREFIX_URL           = os.environ.get(WEB_PREFIX_URL_KEY) \
+                            if os.environ.get(WEB_PREFIX_URL_KEY) is not None else ''

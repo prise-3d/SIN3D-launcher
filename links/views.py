@@ -12,6 +12,17 @@ import json
 from . import config  as cfg
 
 
+def get_base_data(expe_name=None):
+    '''
+    Used to store default data to send for each view
+    '''
+    data = {}
+
+    data['BASE'] = settings.WEB_PREFIX_URL
+
+    return data
+
+
 def list_files(request):
 
     # get param 
@@ -19,11 +30,13 @@ def list_files(request):
 
     experiment_path = cfg.expe_data_folder
 
-    files = sorted(os.listdir(experiment_path))
+    files = []
 
-    data = {
-        'folder': files
-    }
+    if os.path.exists(experiment_path):
+        files = sorted(os.listdir(experiment_path))
+
+    data = get_base_data()
+    data['folder'] = files
 
     return render(request, 'links/files.html', data)
 
@@ -50,10 +63,9 @@ def user_links(request):
     for line in lines:
         data = line.split(';')
         links[data[0]] = data[1:]
-            
-    data = {
-        'links': json.dumps(links)
-    }
+    
+    data = get_base_data()
+    data['links'] = json.dumps(links)
     
     return render(request, 'links/links.html', data)
 
