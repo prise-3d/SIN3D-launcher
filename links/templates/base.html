@@ -25,7 +25,11 @@
     </div>
 
     <!-- Global scripts used -->
-    <script type="text/javascript"> 
+    <script type="text/javascript">
+        const BASE     = "{{BASE}}"
+        var baseUrl    = location.protocol + '//' + window.location.host + '/'
+
+        if (BASE !== '') baseUrl += BASE + '/'
     </script>
 
     <!-- Custom Javascript file for experiments template is placed here -->

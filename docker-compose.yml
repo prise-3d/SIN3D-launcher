@@ -9,9 +9,8 @@ services:
         volumes:
             - "./media:/usr/src/app/media" # get access to media files
         ports:
-           - "8000:8000"
+           - "${PORT:-8000}:8000"
         
         # only comment in case it will be necessary
-        # environment:
-        #    WEBEXPE_PREFIX_URL: "${WEBEXPE_PREFIX_URL:-}"
-        #    WEB_API_PREFIX_URL: "${WEB_API_PREFIX_URL:-api}"
+        environment:
+           WEB_PREFIX_URL: "${WEB_PREFIX_URL:-}"
