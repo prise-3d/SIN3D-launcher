@@ -86,12 +86,37 @@ function elemClick(event){
     win.focus();
 }
 
+function generateCalibrationLink(link){
+
+    // get and rebuild b64 link part using current info and calibration experiment
+    b64Part = link.split('?q=')[1]
+    jsonLinkData = JSON.parse(atob(b64Part))
+
+    jsonLinkData['experimentName'] = 'CalibrationMeasurement'
+    jsonLinkData['sceneName'] = '50_shades_of_grey'
+
+    b64LinkData = btoa(JSON.stringify(jsonLinkData)).replace(/[=]/g, '')
+    calibrationLink = jsonLinkData['hostConfig'] + '/#/?q=' + b64LinkData
+
+    console.log(JSON.stringify(jsonLinkData))
+    // add to calibration DOM element the new generated link
+    domCalibrationLink = document.getElementById('calibration-link')
+    domCalibrationLink.setAttribute('href', calibrationLink)
+
+    // Add click event 
+    domCalibrationLink.closest('li').addEventListener('click', elemClick)
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     // Display list of files from day folder
     // need to parse as `Array`
 
     const inputElement = document.getElementsByName('userId')[0]
     const linksList = document.getElementById('links-list')
+
+    // load and generate CalibrationMeasurement experiment link
+    firstLink = links_data[0][0].split(':::')[1]
+    generateCalibrationLink(firstLink)
 
     loadDataList(inputElement, linksList)
     
