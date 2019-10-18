@@ -1,5 +1,6 @@
 const links_data = JSON.parse(links.replace(/&quot;/g, '"'))
 const links_nb_elem = Object.keys(links_data).length
+const KEYCODE_ENTER       = 13
 
 const alertDiv = document.getElementsByClassName('alert-danger')[0]
 
@@ -7,6 +8,11 @@ function loadDataList(elem, list){
     userId = elem.value
 
     if (userId){
+
+        // load and generate CalibrationMeasurement experiment link
+        firstLink = links_data[userId][0].split(':::')[1]
+        generateCalibrationLink(firstLink)
+
 
         // check if nomber of links can let access to userId
         if (userId > (links_nb_elem - 1) || userId < 0){
@@ -98,26 +104,22 @@ function generateCalibrationLink(link){
     b64LinkData = btoa(JSON.stringify(jsonLinkData)).replace(/[=]/g, '')
     calibrationLink = jsonLinkData['hostConfig'] + '/#/?q=' + b64LinkData
 
-    console.log(JSON.stringify(jsonLinkData))
     // add to calibration DOM element the new generated link
     domCalibrationLink = document.getElementById('calibration-link')
     domCalibrationLink.setAttribute('href', calibrationLink)
-
-    // Add click event 
-    domCalibrationLink.closest('li').addEventListener('click', elemClick)
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    // Display list of files from day folder
-    // need to parse as `Array`
 
     const inputElement = document.getElementsByName('userId')[0]
     const linksList = document.getElementById('links-list')
 
-    // load and generate CalibrationMeasurement experiment link
-    firstLink = links_data[0][0].split(':::')[1]
-    generateCalibrationLink(firstLink)
+    // add to calibration event listener
+    domCalibrationLink = document.getElementById('calibration-link')
+    liDomElement = domCalibrationLink.closest('li')
+    liDomElement.addEventListener('click', elemClick)
 
+    // first load data if userId is choosed
     loadDataList(inputElement, linksList)
     
     inputElement.addEventListener('keyup', event => {
@@ -131,3 +133,14 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     })
 })
+
+// check enter key issue
+const checkKey = e => {
+    
+    if (e.keyCode === KEYCODE_ENTER) {
+       e.preventDefault()
+    }
+ }
+ 
+ // implement `key` events
+ document.addEventListener('keydown', checkKey)
