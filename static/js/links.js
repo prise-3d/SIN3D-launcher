@@ -1,28 +1,19 @@
+const toggleVisible = ele => ele.style.display = ele.style.display === 'none' ? 'block' : 'none'
+const toggleClass = (ele, class1, class2) => ele.className = ele.className === class1 ? class2 : class1
+
 const links_data = JSON.parse(links.replace(/&quot;/g, '"'))
 const links_nb_elem = Object.keys(links_data).length
 const KEYCODE_ENTER       = 13
 
 const alertDiv = document.getElementsByClassName('alert-danger')[0]
+const domLiCalibrationLink = document.getElementById('calibration-link').closest('li')
 
 function loadDataList(elem, list){
     userId = elem.value
 
-    if (userId){
 
-        // load and generate CalibrationMeasurement experiment link
-        firstLink = links_data[userId][0].split(':::')[1]
-        generateCalibrationLink(firstLink)
+    if (userId.length > 0){
 
-
-        // check if nomber of links can let access to userId
-        if (userId > (links_nb_elem - 1) || userId < 0){
-            alertDiv.setAttribute('style', 'display:block')
-        }else{
-            alertDiv.setAttribute('style', 'display:none')
-        }
-
-        let currentLinks = links_data[userId]
-    
         // remove event listener of each element by default
         if (list.children.length > 0){
             for (var element of list.children){
@@ -31,40 +22,57 @@ function loadDataList(elem, list){
         }
 
         list.innerHTML = ""
+
+        // check if nomber of links can let access to userId
+        if (userId > (links_nb_elem - 1) || userId < 0){
+            alertDiv.setAttribute('style', 'display:block')
+            domLiCalibrationLink.setAttribute('style', 'display:none')
+        }else{
+            alertDiv.setAttribute('style', 'display:none')
+            domLiCalibrationLink.setAttribute('style', 'display:block')
+            
+            // load and generate CalibrationMeasurement experiment link
+            firstLink = links_data[userId][0].split(':::')[1]
+            generateCalibrationLink(firstLink)
+        
+            let currentLinks = links_data[userId]
     
-        currentLinks.forEach((element, index) => {
-    
-            if (element.length > 0){
-    
-                data = element.split(':::')
+            currentLinks.forEach((element, index) => {
+        
+                if (element.length > 0){
+        
+                    data = element.split(':::')
 
-                // add of div elements
-                rowDiv = document.createElement('div')
-                rowDiv.setAttribute('class', 'row')
+                    // add of div elements
+                    rowDiv = document.createElement('div')
+                    rowDiv.setAttribute('class', 'row')
 
-                rowDivLeft = document.createElement('div')
-                rowDivLeft.setAttribute('class', 'col-md-11')
+                    rowDivLeft = document.createElement('div')
+                    rowDivLeft.setAttribute('class', 'col-md-11')
 
-                rowDivRight = document.createElement('div')
-                rowDivRight.setAttribute('class', 'col-md-1')
+                    rowDivRight = document.createElement('div')
+                    rowDivRight.setAttribute('class', 'col-md-1')
 
-                // create link
-                currentLink = document.createElement('a')
-                currentLink.setAttribute('href', data[1])
-                currentLink.innerHTML = 'Link ' + (index + 1) + ': ' + data[0]
-                
-                // add of elements
-                rowDivLeft.appendChild(currentLink)
-                rowDiv.appendChild(rowDivLeft)
-                rowDiv.appendChild(rowDivRight)
+                    // create link
+                    currentLink = document.createElement('a')
+                    currentLink.setAttribute('href', data[1])
+                    currentLink.innerHTML = 'Link ' + (index + 1) + ': ' + data[0]
+                    
+                    // add of elements
+                    rowDivLeft.appendChild(currentLink)
+                    rowDiv.appendChild(rowDivLeft)
+                    rowDiv.appendChild(rowDivRight)
 
-                currentLi = document.createElement('li')
-                currentLi.setAttribute('class', 'list-group-item')
-                currentLi.appendChild(rowDiv)
+                    currentLi = document.createElement('li')
+                    currentLi.setAttribute('class', 'list-group-item')
+                    currentLi.appendChild(rowDiv)
 
-                list.appendChild(currentLi)
-            }
-        });
+                    list.appendChild(currentLi)
+                }
+            });
+        }
+    }else{
+        domLiCalibrationLink.setAttribute('style', 'display:none')
     }
 }
 
@@ -98,6 +106,7 @@ function generateCalibrationLink(link){
     b64Part = link.split('?q=')[1]
     jsonLinkData = JSON.parse(atob(b64Part))
 
+    // Use default information about calibration experiment
     jsonLinkData['experimentName'] = 'CalibrationMeasurement'
     jsonLinkData['sceneName'] = '50_shades_of_grey'
 
@@ -116,8 +125,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // add to calibration event listener
     domCalibrationLink = document.getElementById('calibration-link')
-    liDomElement = domCalibrationLink.closest('li')
-    liDomElement.addEventListener('click', elemClick)
+    domLiCalibrationLink.addEventListener('click', elemClick)
 
     // first load data if userId is choosed
     loadDataList(inputElement, linksList)
