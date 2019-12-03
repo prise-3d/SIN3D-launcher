@@ -14,7 +14,7 @@ python links/generate/generate_experiment_link.py --experiment AreSameImagesRand
 
 Generate experiment links for each user (file saved into `expe` folder):
 ```sh
-python links/generate/generate_experiment.py --data data/expe1.csv --scenes 2 --users 150 --userId 1 --output expe1_user_links.csv
+python links/generate/generate_experiment.py --data links/media/data/expe1.csv --scenes 2 --users 150 --userId 1 --output expe1_user_links.csv
 ```
 
 - `userId`: tell if an userId is used or not (use of index of line from generated output file)
