@@ -1,154 +1,176 @@
 const toggleVisible = ele => ele.style.display = ele.style.display === 'none' ? 'block' : 'none'
 const toggleClass = (ele, class1, class2) => ele.className = ele.className === class1 ? class2 : class1
 
-const links_data = JSON.parse(links.replace(/&quot;/g, '"'))
-const links_nb_elem = Object.keys(links_data).length
-const KEYCODE_ENTER       = 13
+const guildIdField = document.getElementById('guildId')
+const userIdField = document.getElementById('userId')
+const generateButton = document.getElementById('generateButton')
+const generateInfo = document.getElementById('generateInfo')
 
-const alertDiv = document.getElementsByClassName('alert-danger')[0]
-const domLiCalibrationLink = document.getElementById('calibration-link').closest('li')
-
-function loadDataList(elem, list){
-    userId = elem.value
+const userIdFeedback = document.getElementById('userIdFeedback')
 
 
-    if (userId.length > 0){
+async function loadExperiment(){
+    var urlParams = new URLSearchParams(window.location.search);
 
-        // remove event listener of each element by default
-        if (list.children.length > 0){
-            for (var element of list.children){
-                element.removeEventListener('click', elemClick)
+    if(urlParams.get('id')){
+        current_guild_id = urlParams.get('id')
+
+        for (let option of guildIdField.options){
+            if (option.value == current_guild_id){
+                option.defaultSelected = true
             }
         }
-
-        list.innerHTML = ""
-
-        // check if nomber of links can let access to userId
-        if (userId > (links_nb_elem - 1) || userId < 0){
-            alertDiv.setAttribute('style', 'display:block')
-            domLiCalibrationLink.setAttribute('style', 'display:none')
-        }else{
-            alertDiv.setAttribute('style', 'display:none')
-            domLiCalibrationLink.setAttribute('style', 'display:block')
-            
-            // load and generate CalibrationMeasurement experiment link
-            firstLink = links_data[userId][0].split(':::')[1]
-            generateCalibrationLink(firstLink)
-        
-            let currentLinks = links_data[userId]
-    
-            currentLinks.forEach((element, index) => {
-        
-                if (element.length > 0){
-        
-                    data = element.split(':::')
-
-                    // add of div elements
-                    rowDiv = document.createElement('div')
-                    rowDiv.setAttribute('class', 'row')
-
-                    rowDivLeft = document.createElement('div')
-                    rowDivLeft.setAttribute('class', 'col-md-11')
-
-                    rowDivRight = document.createElement('div')
-                    rowDivRight.setAttribute('class', 'col-md-1')
-
-                    // create link
-                    currentLink = document.createElement('a')
-                    currentLink.setAttribute('href', data[1])
-                    currentLink.innerHTML = 'Link ' + (index + 1) + ': ' + data[0]
-                    
-                    // add of elements
-                    rowDivLeft.appendChild(currentLink)
-                    rowDiv.appendChild(rowDivLeft)
-                    rowDiv.appendChild(rowDivRight)
-
-                    currentLi = document.createElement('li')
-                    currentLi.setAttribute('class', 'list-group-item')
-                    currentLi.appendChild(rowDiv)
-
-                    list.appendChild(currentLi)
-                }
-            });
-        }
-    }else{
-        domLiCalibrationLink.setAttribute('style', 'display:none')
     }
 }
-
-function elemClick(event){
-    event.preventDefault()
-    
-    currentElem = event.currentTarget
-    
-    // Add <i class="fas fa-check"></i>
-    divLeft = currentElem.getElementsByClassName('col-md-1')[0]
-
-    if (divLeft.children.length <= 0){
-        iconElem = document.createElement('li')
-        iconElem.setAttribute('class', 'fas fa-check')
-        divLeft.appendChild(iconElem)
-
-        // update `li` class element
-        currentElem.setAttribute('class', 'list-group-item already-used')
-    }
-
-    // retrieve and open link in new tab
-    link = currentElem.getElementsByTagName('a')[0]
-    url = link.getAttribute('href')
-    var win = window.open(url, '_blank');
-    win.focus();
-}
-
-function generateCalibrationLink(link){
-
-    // get and rebuild b64 link part using current info and calibration experiment
-    b64Part = link.split('?q=')[1]
-    jsonLinkData = JSON.parse(atob(b64Part))
-
-    // Use default information about calibration experiment
-    jsonLinkData['experimentName'] = 'CalibrationMeasurement'
-    jsonLinkData['sceneName'] = '50_shades_of_grey'
-
-    b64LinkData = btoa(JSON.stringify(jsonLinkData)).replace(/[=]/g, '')
-    calibrationLink = jsonLinkData['hostConfig'] + '/#/?q=' + b64LinkData
-
-    // add to calibration DOM element the new generated link
-    domCalibrationLink = document.getElementById('calibration-link')
-    domCalibrationLink.setAttribute('href', calibrationLink)
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-
-    const inputElement = document.getElementsByName('userId')[0]
-    const linksList = document.getElementById('links-list')
-
-    // add to calibration event listener
-    domCalibrationLink = document.getElementById('calibration-link')
-    domLiCalibrationLink.addEventListener('click', elemClick)
-
-    // first load data if userId is choosed
-    loadDataList(inputElement, linksList)
-    
-    inputElement.addEventListener('keyup', event => {
-        event.preventDefault()
-        currentElem = event.currentTarget
-
-        loadDataList(currentElem, linksList)
-
-        for (var element of linksList.children){
-            element.addEventListener('click', elemClick)
-        }
-    })
-})
 
 // check enter key issue
-const checkKey = e => {
-    
-    if (e.keyCode === KEYCODE_ENTER) {
-       e.preventDefault()
+async function searchUserId(){
+
+    // reinit feedback div and form
+    // userIdFeedback.innerText = ''
+    userIdField.className = 'form-control'
+    generateButton.disabled = true
+
+    // get form value
+    let guildId = guildIdField.value
+    let userId = userIdField.value
+
+    if (!userId.length){
+        return
     }
- }
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+    let data = {'guildId': guildId, 'userId': userId}
+    
+    fetch('/check', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json; charset=utf-8',
+            'X-CSRFToken': csrfToken
+        }
+    })
+    .then((resp) => 
+        resp.json()
+    )
+    .then(res => {
+        // update status field and enable link generation if valid
+        userIdFeedback.innerText = res.message
+        
+        if (res.status){
+            userIdField.className = 'form-control is-valid'
+            userIdFeedback.className = 'valid-feedback'
+            generateButton.disabled = false
+        }else{
+            userIdField.className = 'form-control is-invalid'
+            userIdFeedback.className = 'invalid-feedback'
+            generateButton.disabled = true
+        }
+    })
+}
+
+async function guildIdChanged(){
+    // reinit field if guild value changed
+    userIdField.className = 'form-control'
+    userIdFeedback.className = ''
+    userIdFeedback.innerText = ''
+    userIdField.value = ''
+    generateButton.disabled = true
+}
+
+async function generateLink(){
+
+    // reinit field if guild value changed
+    let guildId = guildIdField.value
+    let userId = userIdField.value
+
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+    let data = {'guildId': guildId, 'userId': userId}
+    
+    fetch('/generate', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json; charset=utf-8',
+            'X-CSRFToken': csrfToken
+        }
+    })
+    .then((resp) => 
+        resp.json()
+    )
+    .then(res => {
+        // update status field and enable link generation if valid
+        console.log(res)
+        user_config = res.config
+        user_link = res.link
+
+        if (res.status){
+             // Add link to local storage
+            var localStorage = window.localStorage
+
+            // link composed of {'experimentId', 'link'}
+            expes_link = {}
+            
+            // retrieve expe links if exists
+            if (localStorage.getItem('p3d-user-links')){
+                expes_link = JSON.parse(localStorage.getItem('p3d-user-links'))
+            }
+
+            if (!expes_link[user_config.experimentName]){
+                // create for this experiment
+                expes_link[user_config.experimentName] = {}
+            }
+
+            if (!expes_link[user_config.experimentName][user_config.experimentId]){
+                // create for this experiment and experiment id
+                expes_link[user_config.experimentName][user_config.experimentId] = {}
+            }
+
+            if (!expes_link[user_config.experimentName][user_config.experimentId][user_config.userId]){
+                // create for this experiment, experiment id and user id
+                expes_link[user_config.experimentName][user_config.experimentId][user_config.userId] = {'config': user_config, 'link': user_link}
+            }
+
+            localStorage.setItem('p3d-user-links', JSON.stringify(expes_link))
+            
+            generateInfo.className = 'alert alert-dismissible alert-success'
+            generateInfo.style.display = 'block'
+
+            generateInfo.innerHTML = '<button id="generateInfoClose" type="button" class="close" data-dismiss="alert">&times;</button> \
+            Well done! You successfully generate <a href="' + user_link + '" class="alert-link">your experiment link</a>. \
+            <strong>This link is unique and associated with your browser</strong>..'
+
+        }else{
+            generateInfo.className = 'alert alert-dismissible alert-danger'
+            generateInfo.style.display = 'block'
+
+            generateInfo.innerHTML = '<button id="generateInfoClose" type="button" class="close" data-dismiss="alert">&times;</button> \
+            <strong>An error occured!</strong> ' + res.message + '.'
+        }
+
+        let generateInfoClose = document.getElementById('generateInfoClose')
+
+        // link function
+        generateInfoClose.addEventListener('click', (e) => {
+            toggleVisible(generateInfo)
+        })
+
+        // reset form
+        loadLinks()
+        guildIdChanged()
+       
+    })
+}
+
+// check by default
+searchUserId()
+
+document.addEventListener('DOMContentLoaded', loadExperiment)
+userIdField.addEventListener('keyup', searchUserId)
+guildIdField.addEventListener('change', guildIdChanged)
+generateButton.addEventListener('click', generateLink)
  
  // implement `key` events
- document.addEventListener('keydown', checkKey)
+ // document.addEventListener('keydown', checkKey)

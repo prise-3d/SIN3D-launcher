@@ -36,7 +36,7 @@ def extract_data(line):
 
 def main():
 
-    parser = argparse.ArgumentParser(description="Compute specific dataset for model using of metric")
+    parser = argparse.ArgumentParser(description="Compute experiment data")
 
     parser.add_argument('--data', type=str, help='data links to use', required=True)
     parser.add_argument('--scenes', type=int, help="number of scenes", required=True)
