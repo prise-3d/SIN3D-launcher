@@ -8,8 +8,9 @@ from . import views
 app_name = 'expe'
 
 urlpatterns = [
-    path('', views.list_files, name='list_files'),
-    path('links', views.user_links, name='user_links'),
+    path('', views.load_index, name='generate_link'),
+    path('check', views.check_user_id, name='check_user_id'),
+    path('generate', views.generate_user_link, name='generate_user_link'),
 ]
 
 if settings.DEBUG is True:

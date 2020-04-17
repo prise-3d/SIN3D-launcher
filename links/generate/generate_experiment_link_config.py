@@ -43,10 +43,10 @@ def main():
     p_output        = args.output
 
     p_scenes = None
-    
+
     # generate link for each scene
     if p_experiment in cfg.scenes_list:
-        p_scenes = cfg.scenes_list[p_experiment]
+        p_scenes = cfg.scenes_list_calibration[p_experiment]
     else:
         print("Pas de scènes disponibles par défaut dans cette expérience")
         exit(0)
