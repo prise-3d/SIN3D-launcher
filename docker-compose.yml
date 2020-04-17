@@ -2,6 +2,14 @@ version: '3'
 
 services:
 
+    mongo:
+        container_name: mongo
+        image: mongo
+        ports:
+           - "27017:27017"
+        networks:
+            - backend
+
     webexpe:
         container_name: sin3dlauncherinst
         image: sin3dlauncher
@@ -10,7 +18,16 @@ services:
             - "./media:/usr/src/app/media" # get access to media files
         ports:
            - "${PORT:-8000}:8000"
-        
+        links:
+            - mongo
         # only comment in case it will be necessary
         environment:
            WEB_PREFIX_URL: "${WEB_PREFIX_URL:-}"
+
+        depends_on:
+            - mongo
+        networks:
+            - backend
+
+networks:
+    backend:
