@@ -44,9 +44,9 @@ async function searchUserId(){
 
     let data = {'guildId': guildId, 'userId': userId}
 
-    let url = `${BASE}` === '' ? 'check' : `${BASE}/check`
+    let url = `${BASE}` === '' ? 'check' : `/${BASE}/check`
     
-    fetch(url, {
+    fetch('check', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -92,9 +92,9 @@ async function generateLink(){
 
     let data = {'guildId': guildId, 'userId': userId}
     
-    let url = `${BASE}` === '' ? 'generate' : `${BASE}/generate`
+    let url = `${BASE}` === '' ? 'generate' : `/${BASE}/generate`
 
-    fetch(url, {
+    fetch('generate', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
