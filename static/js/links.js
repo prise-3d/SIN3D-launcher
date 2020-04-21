@@ -16,8 +16,10 @@ async function loadExperiment(){
         current_guild_id = urlParams.get('id')
 
         for (let option of guildIdField.options){
+        
             if (option.value == current_guild_id){
                 option.defaultSelected = true
+                guildIdField.disabled = true // lock field by default
             }
         }
     }
@@ -44,7 +46,7 @@ async function searchUserId(){
 
     let data = {'guildId': guildId, 'userId': userId}
 
-    let url = `${BASE}` === '' ? 'check' : `/${BASE}/check`
+    // let url = `${BASE}` === '' ? 'check' : `/${BASE}/check`
     
     fetch('check', {
         method: 'POST',
@@ -92,7 +94,7 @@ async function generateLink(){
 
     let data = {'guildId': guildId, 'userId': userId}
     
-    let url = `${BASE}` === '' ? 'generate' : `/${BASE}/generate`
+    // let url = `${BASE}` === '' ? 'generate' : `/${BASE}/generate`
 
     fetch('generate', {
         method: 'POST',
@@ -144,7 +146,7 @@ async function generateLink(){
             generateInfo.style.display = 'block'
 
             generateInfo.innerHTML = '<button id="generateInfoClose" type="button" class="close" data-dismiss="alert">&times;</button> \
-            Well done! You successfully generate <a href="' + user_link + '" class="alert-link">your experiment link</a>. \
+            Well done! You successfully generate <a href="' + user_link + '" target="_blank" class="alert-link">your experiment link</a>. \
             <strong>This link is unique and associated with your browser</strong>..'
 
         }else{

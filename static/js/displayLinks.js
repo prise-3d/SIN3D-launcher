@@ -44,7 +44,7 @@ async function loadLinks(){
                     <li><p><i class="fa-li fas fa-flask"></i> ' + experimentId + '</p></li> \
                     <li><p><i class="fa-li fas fa-id-badge"></i> '  + userId + '</p></li>\
                     </ul>\
-                    <a href="' + userValue.link + '"><span class="badge badge-primary badge-pill">Launch experiment <i class="fas fa-external-link-alt"></i></span></a>'
+                    <a href="' + userValue.link + '" target="_blank"><span class="badge badge-primary badge-pill">Launch experiment <i class="fas fa-external-link-alt"></i></span></a>'
                     cardBodyList.append(cardBodyItem)
                 }
             }
