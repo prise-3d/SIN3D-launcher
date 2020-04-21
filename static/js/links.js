@@ -16,8 +16,10 @@ async function loadExperiment(){
         current_guild_id = urlParams.get('id')
 
         for (let option of guildIdField.options){
+        
             if (option.value == current_guild_id){
                 option.defaultSelected = true
+                guildIdField.disabled = true // lock field by default
             }
         }
     }
@@ -36,14 +38,17 @@ async function searchUserId(){
     let userId = userIdField.value
 
     if (!userId.length){
+        guildIdChanged()
         return
     }
 
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
 
     let data = {'guildId': guildId, 'userId': userId}
+
+    // let url = `${BASE}` === '' ? 'check' : `/${BASE}/check`
     
-    fetch('/check', {
+    fetch('check', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -73,7 +78,7 @@ async function searchUserId(){
 async function guildIdChanged(){
     // reinit field if guild value changed
     userIdField.className = 'form-control'
-    userIdFeedback.className = ''
+    userIdFeedback.className = 'valid-feedback'
     userIdFeedback.innerText = ''
     userIdField.value = ''
     generateButton.disabled = true
@@ -89,7 +94,9 @@ async function generateLink(){
 
     let data = {'guildId': guildId, 'userId': userId}
     
-    fetch('/generate', {
+    // let url = `${BASE}` === '' ? 'generate' : `/${BASE}/generate`
+
+    fetch('generate', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -139,7 +146,7 @@ async function generateLink(){
             generateInfo.style.display = 'block'
 
             generateInfo.innerHTML = '<button id="generateInfoClose" type="button" class="close" data-dismiss="alert">&times;</button> \
-            Well done! You successfully generate <a href="' + user_link + '" class="alert-link">your experiment link</a>. \
+            Well done! You successfully generate <a href="' + user_link + '" target="_blank" class="alert-link">your experiment link</a>. \
             <strong>This link is unique and associated with your browser</strong>..'
 
         }else{

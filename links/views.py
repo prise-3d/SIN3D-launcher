@@ -51,7 +51,7 @@ def load_index(request):
     - experiment identifiers available from configuration
     '''
 
-    data = {}
+    data = get_base_data()
 
     # get all configurations
     configurations = configurations_collection.find()
@@ -69,7 +69,9 @@ def load_index(request):
 
 def check_user_id(request):
 
-    data = {'status': True, 'message': None}
+    data = get_base_data()
+    data['status'] = True
+    data['message'] = None
 
     if request.method == 'POST':
         
@@ -111,7 +113,10 @@ def generate_user_link(request):
     Generate link is possible for user, otherwise send an issue with error code
     '''
 
-    data = {'status': False}
+    data = get_base_data()
+    data['status'] = True
+    data['message'] = None
+    
     # create link and add it to local storage of navigator
     if request.method == 'POST':
 
